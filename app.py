@@ -69,7 +69,7 @@ def getFile() -> Response:
     
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
 
-@app.route(rule='/generate_link', methods=['POST'])
+@app.route('/generate_link', methods=['POST'])
 def getLink() -> Response:
     global config
     try:
