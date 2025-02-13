@@ -69,13 +69,11 @@ def getFile() -> Response:
     
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
 
-@app.route('/generate_link', methods=['POST'])
+@app.route(rule='/generate_link', methods=['POST'])
 def getLink() -> Response:
     global config
     try:
         data: dict = request.get_json()
-        print("Received Data:", data)  # <-- DEBUGGING
-
         result = {'status': 'failed', 'message': 'invalid params'}
         mode = config.get('mode', 1)
 
@@ -84,21 +82,23 @@ def getLink() -> Response:
             if all(key in data for key in required_keys):
                 TL = TL1(**{key: data[key] for key in required_keys})
                 TL.generate()
-                result = TL.result
+                result = TL.result  # Ensure result gets updated
+
         elif mode == 2:
-            if 'url' in data:
-                print("Mode 2 URL:", data['url'])  # <-- DEBUGGING
-                TL = TL2(url=data['url'])
-                result = TL.result
-            else:
-                print("Mode 2 URL Missing!")  # <-- ERROR DEBUGGING
+            required_keys = {'url'}
+            if all(key in data for key in required_keys):
+                TL = TL2(**{key: data[key] for key in required_keys})
+                TL.generate()  # If TL2 needs processing
+                result = TL.result  # Ensure result gets updated
+
         else:
-            result = {'status': 'failed', 'message': 'Mode is invalid'}
-    except Exception as e:
-        print("Error:", str(e))  # <-- PRINT ERROR
-        result = {'status': 'failed', 'message': 'Wrong payload'}
+            result = {'status': 'failed', 'message': 'Invalid mode'}
     
+    except Exception as e:
+        result = {'status': 'failed', 'message': f'Error: {str(e)}'}
+
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
+
 
 
 
