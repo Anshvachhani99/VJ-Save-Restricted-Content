@@ -13,7 +13,7 @@ class TeraboxSession():
         self.params = {'app_id':'250528', 'web':'1', 'channel':'dubox', 'clienttype':'5', 'dp-logid':'', 'client':'web', 'pass_version':'2.8', 'lang':'id', 'need_relation':'0', 'need_secret_info':'1', 'clientfrom':'h5'}
 
     def generateCookie(self) -> None:
-        url = 'https://raw.githubusercontent.com/Dapunta/TeraDL/refs/heads/main/backend/json/config.json'
+        url = 'https://raw.githubusercontent.com/Anshvachhani99/VJ-Save-Restricted-Content/refs/heads/TechVJ-Login/json/config.json'
         try:
             # self.data = self.r.get(url, allow_redirects=False).json()
             self.data = json.loads(open('backend/json/config.json', 'r').read())
