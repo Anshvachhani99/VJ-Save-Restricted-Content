@@ -43,28 +43,26 @@ def getConfig() -> Response:
     return Response(response=json.dumps(config, sort_keys=False), mimetype='application/json')
 
 #--> Get file
-@app.route('/generate_file', methods=['POST'])
+#--> Get file
+@app.route(rule='/generate_file', methods=['POST'])
 def getFile() -> Response:
     global config
     try:
-        data: dict = request.get_json()
-        result = {'status': 'failed', 'message': 'invalid params'}
+        data : dict = request.get_json()
+        result = {'status':'failed', 'message':'invalid params'}
         mode = config.get('mode', 1)
-        cookie = config.get('cookie', '')
-
+        cookie = config.get('cookie','')
         if data.get('url') and mode:
-            if mode == 1 or cookie == '':
-                TF = TF1()
-            elif mode == 2:
-                TF = TF2(cookie)
+            if mode == 1 or cookie == '': TF = TF1()
+            elif mode == 2: TF = TF2(cookie)
             TF.search(data.get('url'))
             result = TF.result
-    except Exception as e:
-        result = {'status': 'failed', 'message': f'Error in terabox app: {str(e)}'}
-    
-    return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
+    except Exception as e: result = {'status':'failed', 'message':'i dont know why error in terabox app : {}'.format(str(e))}
+    return Response(response=json.dumps(obj=result, sort_keys=False), mimetype='application/json')
 
-@app.route('/generate_link', methods=['POST'])
+
+#--> Get link
+@app.route(rule='/generate_link', methods=['POST'])
 def getLink() -> Response:
     global config
     try:
@@ -84,7 +82,7 @@ def getLink() -> Response:
         else : result = {'status':'failed', 'message':'gaada mode nya'}
         result = TL.result
     except: result = {'status':'failed', 'message':'wrong payload'}
-    return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
+    return Response(response=json.dumps(obj=result, sort_keys=False), mimetype='application/json')
 
 
 
