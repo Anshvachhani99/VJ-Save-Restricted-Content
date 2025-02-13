@@ -73,30 +73,22 @@ def getFile() -> Response:
 def getLink() -> Response:
     global config
     try:
-        data: dict = request.get_json()
-        result = {'status': 'failed', 'message': 'invalid params'}
+        data : dict = request.get_json()
+        result = {'status':'failed', 'message':'invalid params'}
         mode = config.get('mode', 1)
-
         if mode == 1:
             required_keys = {'fs_id', 'uk', 'shareid', 'timestamp', 'sign', 'js_token', 'cookie'}
             if all(key in data for key in required_keys):
                 TL = TL1(**{key: data[key] for key in required_keys})
                 TL.generate()
-                result = TL.result  # Ensure result gets updated
-
         elif mode == 2:
             required_keys = {'url'}
             if all(key in data for key in required_keys):
                 TL = TL2(**{key: data[key] for key in required_keys})
-                TL.generate()  # If TL2 needs processing
-                result = TL.result  # Ensure result gets updated
-
-        else:
-            result = {'status': 'failed', 'message': 'Invalid mode'}
-    
-    except Exception as e:
-        result = {'status': 'failed', 'message': f'Error: {str(e)}'}
-
+            pass
+        else : result = {'status':'failed', 'message':'gaada mode nya'}
+        result = TL.result
+    except: result = {'status':'failed', 'message':'wrong payload'}
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
 
 
