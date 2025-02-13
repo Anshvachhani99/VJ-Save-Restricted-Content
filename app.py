@@ -15,11 +15,13 @@ from python.terabox2 import TeraboxFile as TF2, TeraboxLink as TL2, TeraboxSessi
 
 #--> Global Variable
 config = {
-    'status': 'failed',
-    'message': 'cookie terabox nya invalid bos, coba lapor ke dapunta',
-    'mode': 1,
-    'cookie': ''
+    'status': 'success',  
+    'message': 'Cookie added successfully',
+    'mode': 2,
+    'user_id': 'oV3yVUBAotSkMW8ADJymPYDbtqG15hRwCCcrBl3CORYIWatFbhQeOPV6Z_Q',
+    'cookie': 'lang=id; ndus=8B58AEF11A9105323E995AB093E368AE22EC55FDB6EA507BE0A3FA87E3AE5F9D;'
 }
+
 
 #--> Home Route (For Koyeb)
 @app.route('/')
