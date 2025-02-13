@@ -69,36 +69,26 @@ def getFile() -> Response:
     
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
 
-#--> Get link
-@app.route('/generate_link', methods=['POST'])
+@app.route(rule='/generate_link', methods=['POST'])
 def getLink() -> Response:
     global config
     try:
-        data: dict = request.get_json()
-        print("Received Data:", data)  # <-- DEBUGGING
-
-        result = {'status': 'failed', 'message': 'invalid params'}
+        data : dict = request.get_json()
+        result = {'status':'failed', 'message':'invalid params'}
         mode = config.get('mode', 1)
-
         if mode == 1:
             required_keys = {'fs_id', 'uk', 'shareid', 'timestamp', 'sign', 'js_token', 'cookie'}
             if all(key in data for key in required_keys):
                 TL = TL1(**{key: data[key] for key in required_keys})
                 TL.generate()
-                result = TL.result
         elif mode == 2:
-            if 'url' in data:
-                print("Mode 2 URL:", data['url'])  # <-- DEBUGGING
-                TL = TL2(url=data['url'])
-                result = TL.result
-            else:
-                print("Mode 2 URL Missing!")  # <-- ERROR DEBUGGING
-        else:
-            result = {'status': 'failed', 'message': 'Mode is invalid'}
-    except Exception as e:
-        print("Error:", str(e))  # <-- PRINT ERROR
-        result = {'status': 'failed', 'message': 'Wrong payload'}
-    
+            required_keys = {'url'}
+            if all(key in data for key in required_keys):
+                TL = TL2(**{key: data[key] for key in required_keys})
+            pass
+        else : result = {'status':'failed', 'message':'gaada mode nya'}
+        result = TL.result
+    except: result = {'status':'failed', 'message':'wrong payload'}
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
 
 
