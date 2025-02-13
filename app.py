@@ -75,6 +75,8 @@ def getLink() -> Response:
     global config
     try:
         data: dict = request.get_json()
+        print("Received Data:", data)  # <-- DEBUGGING
+
         result = {'status': 'failed', 'message': 'invalid params'}
         mode = config.get('mode', 1)
 
@@ -86,14 +88,19 @@ def getLink() -> Response:
                 result = TL.result
         elif mode == 2:
             if 'url' in data:
+                print("Mode 2 URL:", data['url'])  # <-- DEBUGGING
                 TL = TL2(url=data['url'])
                 result = TL.result
+            else:
+                print("Mode 2 URL Missing!")  # <-- ERROR DEBUGGING
         else:
             result = {'status': 'failed', 'message': 'Mode is invalid'}
-    except Exception:
+    except Exception as e:
+        print("Error:", str(e))  # <-- PRINT ERROR
         result = {'status': 'failed', 'message': 'Wrong payload'}
     
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
+
 
 #--> Run Flask App on Koyeb
 if __name__ == "__main__":
