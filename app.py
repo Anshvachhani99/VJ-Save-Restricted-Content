@@ -69,27 +69,35 @@ def getFile() -> Response:
     
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
 
-@app.route(rule='/generate_link', methods=['POST'])
+@app.route('/generate_link', methods=['POST'])
 def getLink() -> Response:
     global config
     try:
-        data : dict = request.get_json()
-        result = {'status':'failed', 'message':'invalid params'}
+        data = request.get_json()
+        result = {'status': 'failed', 'message': 'invalid params'}
         mode = config.get('mode', 1)
+
         if mode == 1:
             required_keys = {'fs_id', 'uk', 'shareid', 'timestamp', 'sign', 'js_token', 'cookie'}
             if all(key in data for key in required_keys):
                 TL = TL1(**{key: data[key] for key in required_keys})
                 TL.generate()
+                result = TL.result  # <-- Assign result correctly
+
         elif mode == 2:
-            required_keys = {'url'}
-            if all(key in data for key in required_keys):
-                TL = TL2(**{key: data[key] for key in required_keys})
-            pass
-        else : result = {'status':'failed', 'message':'gaada mode nya'}
-        result = TL.result
-    except: result = {'status':'failed', 'message':'wrong payload'}
+            if 'url' in data:
+                TL = TL2(url=data['url'])
+                TL.generate()  # <-- Call generate function
+                result = TL.result  # <-- Assign the result
+
+        else:
+            result = {'status': 'failed', 'message': 'Invalid mode'}
+
+    except Exception as e:
+        result = {'status': 'failed', 'message': f'Error: {str(e)}'}
+
     return Response(response=json.dumps(result, sort_keys=False), mimetype='application/json')
+
 
 
 #--> Run Flask App on Koyeb
